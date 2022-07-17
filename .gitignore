@@ -1,0 +1,8 @@
+.cproject
+.mxproject
+.project
+.settings/
+Debug/*
+!**/makefile
+!**/*.mk
+!**/objects.list
