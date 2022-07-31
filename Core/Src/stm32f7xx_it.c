@@ -182,19 +182,19 @@ void PendSV_Handler(void)
   /* USER CODE END PendSV_IRQn 1 */
 }
 
-/**
-  * @brief This function handles System tick timer.
-  */
-void SysTick_Handler(void)
-{
-  /* USER CODE BEGIN SysTick_IRQn 0 */
+// /**
+//   * @brief This function handles System tick timer.
+//   */
+// void SysTick_Handler(void)
+// {
+//   /* USER CODE BEGIN SysTick_IRQn 0 */
 
-  /* USER CODE END SysTick_IRQn 0 */
+//   /* USER CODE END SysTick_IRQn 0 */
 
-  /* USER CODE BEGIN SysTick_IRQn 1 */
+//   /* USER CODE BEGIN SysTick_IRQn 1 */
 
-  /* USER CODE END SysTick_IRQn 1 */
-}
+//   /* USER CODE END SysTick_IRQn 1 */
+// }
 
 /******************************************************************************/
 /* STM32F7xx Peripheral Interrupt Handlers                                    */
@@ -259,19 +259,19 @@ void OTG_HS_EP1_IN_IRQHandler(void)
   /* USER CODE END OTG_HS_EP1_IN_IRQn 1 */
 }
 
-/**
-  * @brief This function handles USB On The Go HS global interrupt.
-  */
-void OTG_HS_IRQHandler(void)
-{
-  /* USER CODE BEGIN OTG_HS_IRQn 0 */
+// /**
+//   * @brief This function handles USB On The Go HS global interrupt.
+//   */
+// void OTG_HS_IRQHandler(void)
+// {
+//   /* USER CODE BEGIN OTG_HS_IRQn 0 */
 
-  /* USER CODE END OTG_HS_IRQn 0 */
-  HAL_PCD_IRQHandler(&hpcd_USB_OTG_HS);
-  /* USER CODE BEGIN OTG_HS_IRQn 1 */
+//   /* USER CODE END OTG_HS_IRQn 0 */
+//   HAL_PCD_IRQHandler(&hpcd_USB_OTG_HS);
+//   /* USER CODE BEGIN OTG_HS_IRQn 1 */
 
-  /* USER CODE END OTG_HS_IRQn 1 */
-}
+//   /* USER CODE END OTG_HS_IRQn 1 */
+// }
 
 /**
   * @brief This function handles LTDC global interrupt.

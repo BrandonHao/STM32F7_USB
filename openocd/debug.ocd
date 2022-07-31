@@ -1,0 +1,6 @@
+init 
+reset
+halt
+program build/STM32F7_USB.elf
+reset
+halt

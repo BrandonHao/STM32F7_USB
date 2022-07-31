@@ -2,9 +2,8 @@
 .mxproject
 .project
 .settings/
-Debug/*
-!**/makefile
+build/*
+!**/Makefile
 !**/*.mk
-!**/objects.list
 
 .vscode/
