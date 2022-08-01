@@ -1,6 +1,5 @@
 init 
-reset
-halt
+reset init
 program build/STM32F7_USB.elf
 reset
 halt

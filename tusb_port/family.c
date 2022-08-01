@@ -28,7 +28,7 @@
 
 #include "board.h"
 #include "stm32f7xx_hal.h"
-
+#include "stm_cube.h"
 //--------------------------------------------------------------------+
 // Forward USB interrupt events to TinyUSB IRQ Handler
 //--------------------------------------------------------------------+
@@ -41,7 +41,14 @@ void OTG_FS_IRQHandler(void) {
 void OTG_HS_IRQHandler(void) {
     tud_int_handler(1);
 }
+int __io_putchar(int ch) {
+    /* Place your implementation of fputc here */
+    /* e.g. write a character to the USART1 and Loop until the end of
+     * transmission */
+    HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 0xFFFF);
 
+    return ch;
+}
 //--------------------------------------------------------------------+
 // MACRO TYPEDEF CONSTANT ENUM
 //--------------------------------------------------------------------+
@@ -60,7 +67,6 @@ void board_init(void) {
     __HAL_RCC_GPIOJ_CLK_ENABLE();
 
     // 1ms tick timer
-    SysTick_Config(SystemCoreClock / 1000);
 
     GPIO_InitTypeDef GPIO_InitStruct;
 
@@ -84,13 +90,13 @@ void board_init(void) {
     __HAL_RCC_USB_OTG_FS_CLK_ENABLE();
 
     /* Configure VBUS Pin */
-    GPIO_InitStruct.Pin = GPIO_PIN_9;
-    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    // GPIO_InitStruct.Pin = GPIO_PIN_9;
+    // GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    // GPIO_InitStruct.Pull = GPIO_NOPULL;
+    // HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     // Enable VBUS sense (B device) via pin PA9
-    USB_OTG_FS->GCCFG |= USB_OTG_GCCFG_VBDEN;
+    // USB_OTG_FS->GCCFG |= USB_OTG_GCCFG_VBDEN;
 
     // OTG_HS
     // MUC with external ULPI PHY
@@ -168,16 +174,16 @@ uint32_t board_button_read(void) {
     return 0;
 }
 
-int board_uart_read(uint8_t* buf, int len) {
-    UNUSED(buf);
-    UNUSED(len);
-    return 0;
+int board_uart_read(uint8_t* buf, int len)
+{
+  (void) buf; (void) len;
+  return 0;
 }
 
-int board_uart_write(void const* buf, int len) {
-    UNUSED(buf);
-    UNUSED(len);
-    return 0;
+int board_uart_write(void const * buf, int len)
+{
+  HAL_UART_Transmit(&huart1, (uint8_t*)(uintptr_t) buf, len, 0xffff);
+  return len;
 }
 
 volatile uint32_t system_ticks = 0;

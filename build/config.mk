@@ -38,7 +38,6 @@ APP_INC= \
 
 CORE_SRC= \
 	Core/Src/stm32f7xx_hal_msp.c				\
-	Core/Src/stm32f7xx_hal_timebase_tim.c		\
 	Core/Src/stm32f7xx_it.c						\
 	Core/Src/syscalls.c							\
 	Core/Src/sysmem.c							\
@@ -121,12 +120,20 @@ APP_SRC= \
 OPTIMIZATION= \
     -Og
 
+TUSB_FLAGS= \
+	-DCFG_TUSB_MCU=OPT_MCU_STM32F7 \
+  	-DBOARD_TUD_RHPORT=1		\
+  	-DBOARD_TUD_MAX_SPEED=OPT_MODE_HIGH_SPEED\
+	-DCFG_TUSB_DEBUG=3			\
+	
+
 CFLAGS= \
 	-mfloat-abi=hard			\
 	-mfpu=fpv5-sp-d16           \
 	-mthumb						\
 	--specs=nano.specs			\
 	-fstack-usage				\
+	-DCFG_TUSB_DEBUG=3
 
 CXXFLAGS= \
 	-mfloat-abi=hard			\
@@ -138,16 +145,12 @@ CXXFLAGS= \
 	-fno-rtti					\
 	-fno-use-cxa-atexit
 
-TUSB_FLAGS= \
-	-DCFG_TUSB_MCU=OPT_MCU_STM32F7 \
-  	-DBOARD_TUD_RHPORT=1		\
-  	-DBOARD_TUD_MAX_SPEED=OPT_MODE_HIGH_SPEED
-
 CPPFLAGS= \
 	-DDEBUG						\
 	-DUSE_HAL_DRIVER 			\
 	-DUSE_USB_HS				\
 	-DUSE_FULL_LL_DRIVER		\
 	-DSTM32F750xx				\
+	-DLOG=3						\
 	$(TUSB_FLAGS)
 
