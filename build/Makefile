@@ -47,7 +47,7 @@ include config.mk
 DOCGEN          ?= doxygen
 
 # Look for source files relative to the top-level source directory
-VPATH           := $(PROJ_PATH)
+VPATH           := $(PROJ_PATH) $(LIB_PATH)
 
 # Output target file
 target          := $(TARGET_FLASH)
@@ -219,10 +219,6 @@ asflags-gnu-y   += $(foreach inc-dir,$(INC_DIR),'-Wa,-I$(inc-dir)')
 cppflags-gnu-y  += $(foreach inc-dir,$(TINYUSB_INC),-I$(inc-dir))
 asflags-gnu-y   += $(foreach inc-dir,$(TINYUSB_INC),'-Wa,-I$(inc-dir)')
 
-# Tinyusb Port
-cppflags-gnu-y  += $(foreach inc-dir,$(TUSB_PORT_INC),-I$(inc-dir))
-asflags-gnu-y   += $(foreach inc-dir,$(TUSB_PORT_INC),'-Wa,-I$(inc-dir)')
-
 # Main app
 cppflags-gnu-y  += $(foreach inc-dir,$(APP_INC),-I$(inc-dir))
 asflags-gnu-y   += $(foreach inc-dir,$(APP_INC),'-Wa,-I$(inc-dir)')
@@ -287,7 +283,7 @@ ldflags-gnu-y   += -Wl,-T $(linker_script)
 endif
 
 # Output a link map file and a cross reference table
-ldflags-gnu-y   += -Wl,-Map=$(project).map,--cref
+ldflags-gnu-y   += -Wl,-Map=$(project).map,--cref -Wl,--print-memory-usage
 
 # Add library search paths relative to the top level directory.
 ldflags-gnu-y   += $(foreach _LIB_PATH,$(addprefix $(PRJ_PATH)/,$(LIB_PATH)),-L$(_LIB_PATH))
@@ -415,7 +411,7 @@ $(target): $(linker_script) $(MAKEFILE_PATH) config.mk $(obj-y)
 	$(Q)$(LD) $(l_flags) $(obj-y) $(libflags-gnu-y) -o $@
 	@echo $(MSG_SIZE)
 	$(Q)$(SIZE) -Ax $@
-	$(Q)$(SIZE) -Bx $@
+	# $(Q)$(SIZE) -Bx $@
 
 # Create extended function listing from target output file.
 %.lss: $(target)
