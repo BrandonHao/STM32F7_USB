@@ -48,6 +48,17 @@
 // Initialize on-board peripherals : led, button, uart and USB
 void board_init(void);
 
+// Turn LED on or off
+void board_led_write(bool state);
+
+// Control led pattern using phase duration in ms.
+// For each phase, LED is toggle then repeated, board_led_task() is required to be called
+//void board_led_pattern(uint32_t const phase_ms[], uint8_t count);
+
+// Get the current state of button
+// a '1' means active (pressed), a '0' means inactive.
+uint32_t board_button_read(void);
+
 // Get characters from UART
 int board_uart_read(uint8_t* buf, int len);
 

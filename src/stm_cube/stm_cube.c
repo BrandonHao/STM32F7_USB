@@ -17,7 +17,6 @@
  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include "error_handler.h"
 #include "stm_cube.h"
 #include "main.h"
 
@@ -51,6 +50,9 @@ LTDC_HandleTypeDef hltdc;
 QSPI_HandleTypeDef hqspi;
 
 RTC_HandleTypeDef hrtc;
+
+SAI_HandleTypeDef hsai_BlockA2;
+DMA_HandleTypeDef hdma_sai2_a;
 
 UART_HandleTypeDef huart1;
 

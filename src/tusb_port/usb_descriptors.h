@@ -96,9 +96,16 @@ enum {
         TUD_AUDIO_DESC_FEATURE_UNIT_TWO_CHANNEL(                                  \
             /*_unitid*/ UAC2_ENTITY_SPK_FEATURE_UNIT,                             \
             /*_srcid*/ UAC2_ENTITY_SPK_INPUT_TERMINAL, /*_ctrlch0master*/         \
-            0, /*_ctrlch1*/          \
-            0, /*_ctrlch2*/          \
-            0,                \
+            (                                                                     \
+                AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_MUTE_POS |               \
+                AUDIO_CTRL_RW                                                     \
+                    << AUDIO_FEATURE_UNIT_CTRL_VOLUME_POS), /*_ctrlch1*/          \
+            (                                                                     \
+                AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_MUTE_POS |               \
+                AUDIO_CTRL_RW                                                     \
+                    << AUDIO_FEATURE_UNIT_CTRL_VOLUME_POS), /*_ctrlch2*/          \
+            (AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_MUTE_POS |                  \
+             AUDIO_CTRL_RW << AUDIO_FEATURE_UNIT_CTRL_VOLUME_POS),                \
             /*_stridx*/ 0x00), /* Output Terminal Descriptor(4.7.2.5) */          \
         TUD_AUDIO_DESC_OUTPUT_TERM(                                               \
             /*_termid*/ UAC2_ENTITY_SPK_OUTPUT_TERMINAL,                          \

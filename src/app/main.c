@@ -17,29 +17,31 @@
  */
 #include "main.h"
 
-#include "error_handler.h"
-#include "sai_controller.h"
 #include "stm_cube.h"
 
 // List of supported sample rates
+#if defined(__RX__)
+const uint32_t sample_rates[] = {44100, 48000};
+#else
 const uint32_t sample_rates[] = {44100, 48000, 88200, 96000};
+#endif
 
 uint32_t current_sample_rate = 44100;
 
 #define N_SAMPLE_RATES TU_ARRAY_SIZE(sample_rates)
 
-// /* Blink pattern
-//  * - 25 ms   : streaming data
-//  * - 250 ms  : device not mounted
-//  * - 1000 ms : device mounted
-//  * - 2500 ms : device is suspended
-//  */
-// enum {
-//     BLINK_STREAMING = 25,
-//     BLINK_NOT_MOUNTED = 250,
-//     BLINK_MOUNTED = 1000,
-//     BLINK_SUSPENDED = 2500,
-// };
+/* Blink pattern
+ * - 25 ms   : streaming data
+ * - 250 ms  : device not mounted
+ * - 1000 ms : device mounted
+ * - 2500 ms : device is suspended
+ */
+enum {
+    BLINK_STREAMING = 25,
+    BLINK_NOT_MOUNTED = 250,
+    BLINK_MOUNTED = 1000,
+    BLINK_SUSPENDED = 2500,
+};
 
 enum {
     VOLUME_CTRL_0_DB = 0,
@@ -56,7 +58,9 @@ enum {
     VOLUME_CTRL_SILENCE = 0x8000,
 };
 
-// static uint32_t blink_interval_ms = BLINK_NOT_MOUNTED;
+static uint32_t blink_interval_ms = BLINK_NOT_MOUNTED;
+
+
 
 // Audio controls
 // Current states
@@ -76,7 +80,7 @@ const uint8_t resolutions_per_format[CFG_TUD_AUDIO_FUNC_1_N_FORMATS] = {
 // Current resolution, update on format change
 uint8_t current_resolution;
 
-// void led_blinking_task(void);
+void led_blinking_task(void);
 void audio_task(void);
 
 static void init_main(void) {
@@ -127,27 +131,27 @@ int main(void) {
 //--------------------------------------------------------------------+
 
 // Invoked when device is mounted
-// void tud_mount_cb(void) {
-//     blink_interval_ms = BLINK_MOUNTED;
-// }
+void tud_mount_cb(void) {
+    blink_interval_ms = BLINK_MOUNTED;
+}
 
-// // Invoked when device is unmounted
-// void tud_umount_cb(void) {
-//     blink_interval_ms = BLINK_NOT_MOUNTED;
-// }
+// Invoked when device is unmounted
+void tud_umount_cb(void) {
+    blink_interval_ms = BLINK_NOT_MOUNTED;
+}
 
-// // Invoked when usb bus is suspended
-// // remote_wakeup_en : if host allow us  to perform remote wakeup
-// // Within 7ms, device must draw an average of current less than 2.5 mA from
-// bus void tud_suspend_cb(bool remote_wakeup_en) {
-//     (void)remote_wakeup_en;
-//     blink_interval_ms = BLINK_SUSPENDED;
-// }
+// Invoked when usb bus is suspended
+// remote_wakeup_en : if host allow us  to perform remote wakeup
+// Within 7ms, device must draw an average of current less than 2.5 mA from bus
+void tud_suspend_cb(bool remote_wakeup_en) {
+    (void)remote_wakeup_en;
+    blink_interval_ms = BLINK_SUSPENDED;
+}
 
-// // Invoked when usb bus is resumed
-// void tud_resume_cb(void) {
-//     blink_interval_ms = BLINK_MOUNTED;
-// }
+// Invoked when usb bus is resumed
+void tud_resume_cb(void) {
+    blink_interval_ms = BLINK_MOUNTED;
+}
 
 // Helper for clock get requests
 static bool tud_audio_clock_get_request(
@@ -301,44 +305,44 @@ static bool tud_audio_feature_unit_set_request(
     uint8_t rhport,
     audio_control_request_t const *request,
     uint8_t const *buf) {
-    // (void)rhport;
+    (void)rhport;
 
-    // TU_ASSERT(request->bEntityID == UAC2_ENTITY_SPK_FEATURE_UNIT);
-    // TU_VERIFY(request->bRequest == AUDIO_CS_REQ_CUR);
+    TU_ASSERT(request->bEntityID == UAC2_ENTITY_SPK_FEATURE_UNIT);
+    TU_VERIFY(request->bRequest == AUDIO_CS_REQ_CUR);
 
-    // if (request->bControlSelector == AUDIO_FU_CTRL_MUTE) {
-    //     TU_VERIFY(request->wLength == sizeof(audio_control_cur_1_t));
+    if (request->bControlSelector == AUDIO_FU_CTRL_MUTE) {
+        TU_VERIFY(request->wLength == sizeof(audio_control_cur_1_t));
 
-    // mute[request->bChannelNumber] =
-    //     ((audio_control_cur_1_t const *)buf)->bCur;
+        mute[request->bChannelNumber] =
+            ((audio_control_cur_1_t const *)buf)->bCur;
 
-    // TU_LOG1("Set channel %d Mute: %d\r\n",
-    //         request->bChannelNumber,
-    //         mute[request->bChannelNumber]);
+        TU_LOG1("Set channel %d Mute: %d\r\n",
+                request->bChannelNumber,
+                mute[request->bChannelNumber]);
 
-    // return true;
-    // }
-    // else if (request->bControlSelector == AUDIO_FU_CTRL_VOLUME) {
-    // TU_VERIFY(request->wLength == sizeof(audio_control_cur_2_t));
+        return true;
+    }
+    else if (request->bControlSelector == AUDIO_FU_CTRL_VOLUME) {
+        TU_VERIFY(request->wLength == sizeof(audio_control_cur_2_t));
 
-    // volume[request->bChannelNumber] =
-    //     ((audio_control_cur_2_t const *)buf)->bCur;
+        volume[request->bChannelNumber] =
+            ((audio_control_cur_2_t const *)buf)->bCur;
 
-    // TU_LOG1("Set channel %d volume: %d dB\r\n",
-    //         request->bChannelNumber,
-    //         volume[request->bChannelNumber] / 256);
+        TU_LOG1("Set channel %d volume: %d dB\r\n",
+                request->bChannelNumber,
+                volume[request->bChannelNumber] / 256);
 
-    // return true;
-    // }
-    // else {
-    // TU_LOG1(
-    //     "Feature unit set request not supported, entity = %u, selector = "
-    //     "%u, request = %u\r\n",
-    //     request->bEntityID,
-    //     request->bControlSelector,
-    //     request->bRequest);
-    // return false;
-    // }
+        return true;
+    }
+    else {
+        TU_LOG1(
+            "Feature unit set request not supported, entity = %u, selector = "
+            "%u, request = %u\r\n",
+            request->bEntityID,
+            request->bControlSelector,
+            request->bRequest);
+        return false;
+    }
 }
 
 //--------------------------------------------------------------------+
@@ -353,16 +357,16 @@ bool tud_audio_get_req_entity_cb(uint8_t rhport,
 
     if (request->bEntityID == UAC2_ENTITY_CLOCK)
         return tud_audio_clock_get_request(rhport, request);
-    // if (request->bEntityID == UAC2_ENTITY_SPK_FEATURE_UNIT)
-    //     return tud_audio_feature_unit_get_request(rhport, request);
-    // else {
-    //     TU_LOG1(
-    //         "Get request not handled, entity = %d, selector = %d, request = "
-    //         "%d\r\n",
-    //         request->bEntityID,
-    //         request->bControlSelector,
-    //         request->bRequest);
-    // }
+    if (request->bEntityID == UAC2_ENTITY_SPK_FEATURE_UNIT)
+        return tud_audio_feature_unit_get_request(rhport, request);
+    else {
+        TU_LOG1(
+            "Get request not handled, entity = %d, selector = %d, request = "
+            "%d\r\n",
+            request->bEntityID,
+            request->bControlSelector,
+            request->bRequest);
+    }
     return false;
 }
 
@@ -373,8 +377,8 @@ bool tud_audio_set_req_entity_cb(uint8_t rhport,
     audio_control_request_t const *request =
         (audio_control_request_t const *)p_request;
 
-    // if (request->bEntityID == UAC2_ENTITY_SPK_FEATURE_UNIT)
-    //     return tud_audio_feature_unit_set_request(rhport, request, buf);
+    if (request->bEntityID == UAC2_ENTITY_SPK_FEATURE_UNIT)
+        return tud_audio_feature_unit_set_request(rhport, request, buf);
     if (request->bEntityID == UAC2_ENTITY_CLOCK)
         return tud_audio_clock_set_request(rhport, request, buf);
     TU_LOG1(
@@ -390,11 +394,11 @@ bool tud_audio_set_itf_close_EP_cb(uint8_t rhport,
                                    tusb_control_request_t const *p_request) {
     (void)rhport;
 
-    // uint8_t const itf = tu_u16_low(tu_le16toh(p_request->wIndex));
-    // uint8_t const alt = tu_u16_low(tu_le16toh(p_request->wValue));
+    uint8_t const itf = tu_u16_low(tu_le16toh(p_request->wIndex));
+    uint8_t const alt = tu_u16_low(tu_le16toh(p_request->wValue));
 
-    // if (ITF_NUM_AUDIO_STREAMING_SPK == itf && alt == 0)
-    //     blink_interval_ms = BLINK_MOUNTED;
+    if (ITF_NUM_AUDIO_STREAMING_SPK == itf && alt == 0)
+        blink_interval_ms = BLINK_MOUNTED;
 
     return true;
 }
@@ -405,9 +409,9 @@ bool tud_audio_set_itf_cb(uint8_t rhport,
     uint8_t const itf = tu_u16_low(tu_le16toh(p_request->wIndex));
     uint8_t const alt = tu_u16_low(tu_le16toh(p_request->wValue));
 
-    // TU_LOG2("Set interface %d alt %d\r\n", itf, alt);
-    // if (ITF_NUM_AUDIO_STREAMING_SPK == itf && alt != 0)
-    //     blink_interval_ms = BLINK_STREAMING;
+    TU_LOG2("Set interface %d alt %d\r\n", itf, alt);
+    if (ITF_NUM_AUDIO_STREAMING_SPK == itf && alt != 0)
+        blink_interval_ms = BLINK_STREAMING;
 
     // Clear buffer when streaming format is changed
     spk_data_size = 0;
@@ -477,7 +481,7 @@ void audio_task(void) {
                 int32_t left = *src++;
                 int32_t right = *src++;
                 //*dst++ = (int32_t)((uint32_t)((left >> 1) + (right >> 1)) &
-                // 0xffffff00ul);
+                //0xffffff00ul);
             }
             // tud_audio_write((uint8_t *)mic_buf, (uint16_t)(spk_data_size /
             // 2));

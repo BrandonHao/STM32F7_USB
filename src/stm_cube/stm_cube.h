@@ -13,6 +13,9 @@ extern QSPI_HandleTypeDef hqspi;
 
 extern RTC_HandleTypeDef hrtc;
 
+extern SAI_HandleTypeDef hsai_BlockA2;
+extern DMA_HandleTypeDef hdma_sai2_a;
+
 extern UART_HandleTypeDef huart1;
 
 extern DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
@@ -27,6 +30,7 @@ void MX_FMC_Init(void);
 void MX_LTDC_Init(void);
 void MX_QUADSPI_Init(void);
 void MX_RTC_Init(void);
+void MX_SAI2_Init(void);
 void MX_DMA_Init(void);
 void MX_USART1_UART_Init(void);
 

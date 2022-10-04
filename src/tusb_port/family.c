@@ -166,6 +166,14 @@ void board_init(void) {
 // Board porting API
 //--------------------------------------------------------------------+
 
+void board_led_write(bool state) {
+    UNUSED(state);
+}
+
+uint32_t board_button_read(void) {
+    return 0;
+}
+
 int board_uart_read(uint8_t* buf, int len)
 {
   (void) buf; (void) len;
