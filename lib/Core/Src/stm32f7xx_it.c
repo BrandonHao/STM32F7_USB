@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
+  * Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -56,9 +56,7 @@
 
 /* External variables --------------------------------------------------------*/
 extern PCD_HandleTypeDef hpcd_USB_OTG_HS;
-extern DMA2D_HandleTypeDef hdma2d;
-extern LTDC_HandleTypeDef hltdc;
-extern DMA_HandleTypeDef hdma_sai2_a;
+extern DMA_HandleTypeDef hdma_sai1_b;
 extern TIM_HandleTypeDef htim6;
 
 /* USER CODE BEGIN EV */
@@ -211,7 +209,7 @@ void DMA2_Stream4_IRQHandler(void)
   /* USER CODE BEGIN DMA2_Stream4_IRQn 0 */
 
   /* USER CODE END DMA2_Stream4_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_sai2_a);
+  HAL_DMA_IRQHandler(&hdma_sai1_b);
   /* USER CODE BEGIN DMA2_Stream4_IRQn 1 */
 
   /* USER CODE END DMA2_Stream4_IRQn 1 */
@@ -231,33 +229,6 @@ void DMA2_Stream4_IRQHandler(void)
 //   /* USER CODE END OTG_HS_IRQn 1 */
 // }
 
-/**
-  * @brief This function handles LTDC global interrupt.
-  */
-void LTDC_IRQHandler(void)
-{
-  /* USER CODE BEGIN LTDC_IRQn 0 */
-
-  /* USER CODE END LTDC_IRQn 0 */
-  HAL_LTDC_IRQHandler(&hltdc);
-  /* USER CODE BEGIN LTDC_IRQn 1 */
-
-  /* USER CODE END LTDC_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMA2D global interrupt.
-  */
-void DMA2D_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA2D_IRQn 0 */
-
-  /* USER CODE END DMA2D_IRQn 0 */
-  HAL_DMA2D_IRQHandler(&hdma2d);
-  /* USER CODE BEGIN DMA2D_IRQn 1 */
-
-  /* USER CODE END DMA2D_IRQn 1 */
-}
 
 /* USER CODE BEGIN 1 */
 

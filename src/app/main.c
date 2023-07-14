@@ -99,7 +99,7 @@ static void init_main(void) {
     // MX_LTDC_Init();
     // MX_QUADSPI_Init();
     // MX_RTC_Init();
-    MX_SAI2_Init();
+    MX_SAI1_Init();
     MX_DMA_Init();
     MX_USART1_UART_Init();
     printf("test_1\r\n");
